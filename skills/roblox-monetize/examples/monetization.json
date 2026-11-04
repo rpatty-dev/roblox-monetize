@@ -1,0 +1,13 @@
+{
+  "universeId": 1234567890,
+  "configPath": "src/shared/Config.luau",
+  "passTable": "Config.Passes",
+  "productTable": "Config.Products",
+  "items": [
+    { "key": "Lucky", "kind": "pass", "name": "Lucky", "price": 99, "description": "More rare drops." },
+    { "key": "DoubleCash", "kind": "pass", "name": "2x Cash", "price": 149, "description": "Every action pays double. Forever." },
+    { "key": "AutoFarm", "kind": "pass", "name": "Auto Farm", "price": 249, "description": "Keeps earning while you're AFK." },
+    { "key": "CashBoost", "kind": "product", "name": "2x Boost (10 min)", "price": 19, "description": "Double cash for 10 minutes." },
+    { "key": "CashPack", "kind": "product", "name": "Cash Pack", "price": 49, "description": "A big pile of cash, instantly." }
+  ]
+}
