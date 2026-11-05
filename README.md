@@ -1,7 +1,7 @@
 # roblox-monetize
 
 [![test](https://github.com/rpatty-dev/roblox-monetize/actions/workflows/test.yml/badge.svg)](https://github.com/rpatty-dev/roblox-monetize/actions/workflows/test.yml)
-![Windows | macOS | Linux](https://img.shields.io/badge/platform-Windows%20%7C%20macOS%20%7C%20Linux-blue)
+![Windows first](https://img.shields.io/badge/Windows-first-0078D6)
 ![zero dependencies](https://img.shields.io/badge/dependencies-0-brightgreen)
 ![license MIT](https://img.shields.io/badge/license-MIT-green)
 
@@ -17,13 +17,14 @@ You describe the items once (name, price, description). Then you run one command
 
 ## Requirements
 
+- Windows 10/11 (also works on macOS and Linux)
 - Node.js 18 or newer
 - Claude Code
 - A Roblox experience you own (or can edit in a group)
 
 ## Install with Claude (easiest)
 
-Copy this whole block and paste it into Claude Code. It works on Windows, macOS and Linux.
+Copy this whole block and paste it into Claude Code. Built for Windows first; macOS and Linux work the same.
 
 ```text
 Install the roblox-monetize Claude Code skill for me from https://github.com/rpatty-dev/roblox-monetize. Do these steps in order and stop to tell me if any of them fails:
@@ -42,14 +43,14 @@ Install the roblox-monetize Claude Code skill for me from https://github.com/rpa
 
 ## Install by hand
 
-```bash
+```powershell
 git clone https://github.com/rpatty-dev/roblox-monetize.git
 cd roblox-monetize
 node install.mjs          # skill only
 node install.mjs --mcp    # skill + MCP server
 ```
 
-Same commands on Windows (PowerShell or cmd), macOS and Linux. The installer links the skill into `~/.claude/skills/roblox-monetize` (a junction on Windows, no admin needed) and runs a self-test. Restart Claude Code afterwards so it picks up the skill.
+Run in PowerShell or cmd on Windows; the same commands work in a macOS or Linux terminal. The installer links the skill into `~/.claude/skills/roblox-monetize` (a junction on Windows, no admin needed) and runs a self-test. Restart Claude Code afterwards so it picks up the skill.
 
 ## One-time setup: API key
 
@@ -61,14 +62,14 @@ Same commands on Windows (PowerShell or cmd), macOS and Linux. The installer lin
 4. Save, then copy the key.
 5. With the key still on your clipboard, run:
 
-```bash
-# macOS / Linux
-node ~/.claude/skills/roblox-monetize/scripts/monetize.mjs set-key
-```
-
 ```powershell
 # Windows (PowerShell)
 node "$HOME\.claude\skills\roblox-monetize\scripts\monetize.mjs" set-key
+```
+
+```bash
+# macOS / Linux
+node ~/.claude/skills/roblox-monetize/scripts/monetize.mjs set-key
 ```
 
 It reads the key straight from the clipboard, so it never lands in a chat or your shell history. Piping also works: `echo $KEY | node ... set-key`.
