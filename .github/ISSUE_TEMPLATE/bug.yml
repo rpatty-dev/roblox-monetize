@@ -1,0 +1,19 @@
+name: Bug report
+description: Something did not work
+labels: [bug]
+body:
+  - type: input
+    id: os
+    attributes: { label: OS, placeholder: "Windows 11 / macOS 15 / Ubuntu 24.04" }
+    validations: { required: true }
+  - type: input
+    id: node
+    attributes: { label: Node version, description: Output of `node -v` }
+    validations: { required: true }
+  - type: input
+    id: cmd
+    attributes: { label: Command you ran, placeholder: "node monetize.mjs sync monetization.json" }
+  - type: textarea
+    id: out
+    attributes: { label: Full error output, description: Remove your API key if it appears anywhere., render: text }
+    validations: { required: true }

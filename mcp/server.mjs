@@ -7,7 +7,7 @@ import { readFileSync } from "node:fs";
 import { dirname, resolve } from "node:path";
 import { listAll, create, sync } from "../skills/roblox-monetize/scripts/monetize.mjs";
 
-const server = new McpServer({ name: "roblox-monetize", version: "1.0.0" });
+const server = new McpServer({ name: "roblox-monetize", version: "1.1.0" });
 const wrap = (fn) => async (args) => {
   try { return { content: [{ type: "text", text: JSON.stringify(await fn(args), null, 2) }] }; }
   catch (e) { return { isError: true, content: [{ type: "text", text: String(e.message ?? e) }] }; }

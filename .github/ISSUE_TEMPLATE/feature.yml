@@ -1,0 +1,8 @@
+name: Feature request
+description: Suggest something new
+labels: [enhancement]
+body:
+  - type: textarea
+    id: what
+    attributes: { label: What should it do, and why? }
+    validations: { required: true }
