@@ -4,5 +4,8 @@
   "private": true,
   "type": "module",
   "description": "Optional MCP wrapper around the roblox-monetize skill script",
-  "dependencies": { "@modelcontextprotocol/sdk": "1.12.0", "zod": "3.24.1" }
+  "dependencies": {
+    "@modelcontextprotocol/sdk": "1.32.2",
+    "zod": "4.6.7"
+  }
 }
