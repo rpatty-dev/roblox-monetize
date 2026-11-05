@@ -4,6 +4,8 @@
 ![zero dependencies](https://img.shields.io/badge/dependencies-0-brightgreen)
 ![license MIT](https://img.shields.io/badge/license-MIT-green)
 
+**Website and live demo: [roblox-monetize.vercel.app](https://roblox-monetize.vercel.app)**
+
 **Stop copy-pasting game pass IDs out of Creator Hub.** Tell Claude "add a VIP pass for 299 Robux" and it creates the pass on Roblox, puts it on sale, and writes the real ID into your game's config.
 
 A Claude Code skill that creates your Roblox **game passes and developer products for you** and writes their real IDs straight into your game's code. No more copying IDs out of Creator Hub.
