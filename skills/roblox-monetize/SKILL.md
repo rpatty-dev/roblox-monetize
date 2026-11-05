@@ -18,7 +18,7 @@ Run `node $S check <universeId>`.
   2. Under Access Permissions, add **game-passes** and pick operations **read** and **write**, for their experience.
   3. Add **developer-products** with **read** and **write**, for the same experience.
   4. Under Accepted IP Addresses, enter `0.0.0.0/0` (or their own IP).
-  5. Save, copy the key, then type in the chat: `! pbpaste | node $S set-key`
+  5. Save, copy the key, then type in the chat: `! node "$S" set-key` (it reads the key from the clipboard on Windows, macOS and Linux)
 
   Never ask the user to paste the key into the chat. If they do anyway, save it with `set-key` and suggest they regenerate it afterwards.
 - If it says `Key is missing permissions` (403), the key exists but lacks scopes or the IP list. Repeat steps 2 to 4 by editing the existing key; no new key is needed.

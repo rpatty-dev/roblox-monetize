@@ -1,5 +1,12 @@
 # roblox-monetize
 
+[![test](https://github.com/rpatty-dev/roblox-monetize/actions/workflows/test.yml/badge.svg)](https://github.com/rpatty-dev/roblox-monetize/actions/workflows/test.yml)
+![Windows | macOS | Linux](https://img.shields.io/badge/platform-Windows%20%7C%20macOS%20%7C%20Linux-blue)
+![zero dependencies](https://img.shields.io/badge/dependencies-0-brightgreen)
+![license MIT](https://img.shields.io/badge/license-MIT-green)
+
+**Stop copy-pasting game pass IDs out of Creator Hub.** Tell Claude "add a VIP pass for 299 Robux" and it creates the pass on Roblox, puts it on sale, and writes the real ID into your game's config.
+
 A Claude Code skill that creates your Roblox **game passes and developer products for you** and writes their real IDs straight into your game's code. No more copying IDs out of Creator Hub.
 
 You describe the items once (name, price, description). Then you run one command, or ask Claude to "set up monetization". Every item gets created, put on sale, and wired into your config.
@@ -14,16 +21,35 @@ You describe the items once (name, price, description). Then you run one command
 - Claude Code
 - A Roblox experience you own (or can edit in a group)
 
-## Install
+## Install with Claude (easiest)
+
+Copy this whole block and paste it into Claude Code. It works on Windows, macOS and Linux.
+
+```text
+Install the roblox-monetize Claude Code skill for me from https://github.com/rpatty-dev/roblox-monetize. Do these steps in order and stop to tell me if any of them fails:
+
+1. Check that git and Node.js 18 or newer are installed (`git --version`, `node -v`). If either is missing, tell me exactly how to install it for my operating system and wait for me.
+2. Clone the repo into a folder named roblox-monetize in my home directory (if it is already there, run `git pull` in it instead).
+3. In that folder run `node install.mjs --mcp`. It must print "selftest ok" and "Skill installed".
+4. Walk me through creating a Roblox Open Cloud API key, one step at a time:
+   create.roblox.com > Open Cloud > API Keys > Create API Key; add "game-passes" with read + write and "developer-products" with read + write for my experience; set Accepted IP Addresses to 0.0.0.0/0; save and copy the key.
+   Never ask me to paste the key into this chat. Once I have copied it, tell me to type this myself (with the ! at the start), using the real path on my machine:
+   ! node "<home>/.claude/skills/roblox-monetize/scripts/monetize.mjs" set-key
+   That reads the key from my clipboard and stores it privately.
+5. Ask me for my universe ID (the number in my Creator Hub URL after /experiences/) and run the `check` command to prove the key works.
+6. Tell me to restart Claude Code, then say "set up monetization for this game" inside my game project.
+```
+
+## Install by hand
 
 ```bash
 git clone https://github.com/rpatty-dev/roblox-monetize.git
 cd roblox-monetize
-./install.sh          # skill only
-./install.sh --mcp    # skill + MCP server
+node install.mjs          # skill only
+node install.mjs --mcp    # skill + MCP server
 ```
 
-The installer links the skill into `~/.claude/skills/roblox-monetize` and runs a self-test. Restart Claude Code afterwards so it picks up the skill.
+Same commands on Windows (PowerShell or cmd), macOS and Linux. The installer links the skill into `~/.claude/skills/roblox-monetize` (a junction on Windows, no admin needed) and runs a self-test. Restart Claude Code afterwards so it picks up the skill.
 
 ## One-time setup: API key
 
@@ -33,13 +59,21 @@ The installer links the skill into `~/.claude/skills/roblox-monetize` and runs a
    - **developer-products**, with operations **read** and **write**, for your experience
 3. Under **Accepted IP Addresses**, enter `0.0.0.0/0` (any IP) or your own IP.
 4. Save, then copy the key.
-5. Store it (macOS; on other systems pipe the key in however you like):
+5. With the key still on your clipboard, run:
 
 ```bash
-pbpaste | node ~/.claude/skills/roblox-monetize/scripts/monetize.mjs set-key
+# macOS / Linux
+node ~/.claude/skills/roblox-monetize/scripts/monetize.mjs set-key
 ```
 
-The key is saved to `~/.config/roblox-monetize/api-key` with owner-only permissions. You can also set it with the `ROBLOX_API_KEY` environment variable instead.
+```powershell
+# Windows (PowerShell)
+node "$HOME\.claude\skills\roblox-monetize\scripts\monetize.mjs" set-key
+```
+
+It reads the key straight from the clipboard, so it never lands in a chat or your shell history. Piping also works: `echo $KEY | node ... set-key`.
+
+The key is saved to `~/.config/roblox-monetize/api-key` (on Windows `%USERPROFILE%\.config\roblox-monetize\api-key`) with owner-only permissions. You can also set it with the `ROBLOX_API_KEY` environment variable instead.
 
 Check it works (the universe ID is the number in your Creator Hub URL: `/experiences/<universeId>/`):
 
@@ -117,7 +151,7 @@ Config.Passes = {
 ### All commands
 
 ```bash
-node monetize.mjs set-key                          # read the key from stdin and save it
+node monetize.mjs set-key                          # save the key from the clipboard (or stdin)
 node monetize.mjs check <universeId>               # test the key
 node monetize.mjs list <universeId>                # list passes and products
 node monetize.mjs sync <spec.json> [--dry]         # create what's missing, write IDs
@@ -139,6 +173,12 @@ node monetize.mjs selftest                         # offline test
 | `403 Scope not authorized` | Edit the key: add read and write for both APIs, plus the IP list |
 | `... not found in config` | Add `Key = 0,` to that table first |
 | `429` | Rate limited. Retries happen automatically |
+
+## Why
+
+Every Roblox dev has done this: make a pass in Creator Hub, copy the ID, paste it into `Config.luau`, repeat ten times, typo one, wonder why the purchase prompt is broken. This makes it one sentence to Claude, and it is safe to run again whenever you add items.
+
+If it saved you time, a star helps other devs find it.
 
 ## Notes
 

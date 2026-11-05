@@ -10,7 +10,8 @@
 //   node monetize.mjs create-pass <universeId> <name> <price> [description] [imagePath]
 //   node monetize.mjs create-product <universeId> <name> <price> [description] [imagePath]
 //   node monetize.mjs selftest
-import { readFileSync, writeFileSync, existsSync, mkdirSync, chmodSync } from "node:fs";
+import { readFileSync, writeFileSync, existsSync, mkdirSync, chmodSync, realpathSync } from "node:fs";
+import { execSync } from "node:child_process";
 import { homedir } from "node:os";
 import { join, basename, resolve, dirname } from "node:path";
 import { fileURLToPath } from "node:url";
@@ -21,7 +22,7 @@ export const KEY_FILE = join(homedir(), ".config", "roblox-monetize", "api-key")
 export function apiKey() {
   if (process.env.ROBLOX_API_KEY) return process.env.ROBLOX_API_KEY.trim();
   if (existsSync(KEY_FILE)) return readFileSync(KEY_FILE, "utf8").trim();
-  throw new Error(`No API key. Run: pbpaste | node monetize.mjs set-key   (or set ROBLOX_API_KEY)`);
+  throw new Error(`No API key. Copy your Open Cloud key, then run: node monetize.mjs set-key   (reads the clipboard; or set ROBLOX_API_KEY)`);
 }
 
 const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
@@ -99,7 +100,7 @@ export function writeId(src, table, key, id) {
   const b = tableBlock(src, table);
   if (!b) throw new Error(`Table ${table} not found in config`);
   const block = src.slice(b.start, b.end);
-  const re = new RegExp(`(\\b${key}\\s*=\\s*)(\\d+)([^\\n]*)`);
+  const re = new RegExp(`(\\b${key}\\s*=\\s*)(\\d+)([^\\r\\n]*)`); // stop before \r so CRLF files keep their line endings
   const m = block.match(re);
   if (!m) throw new Error(`${table}.${key} not found in config. Add a line like: ${key} = 0,`);
   if (m[2] !== "0" && m[2] !== String(id)) return { src, existing: Number(m[2]) };
@@ -153,17 +154,25 @@ export function selftest() {
   assert(writeId(src, "Config.Passes", "VIP", 99).existing === 55, "never overwrites a real id");
   assert(src.includes("DoubleCash = 123,\n"), "placeholder marker removed");
   assert(src.includes("Lucky = 124, -- (more luck)"), "other comment text kept");
+  const crlf = writeId("Config.Passes = {\r\n\tA = 0, -- REPLACE_WITH_ID\r\n}\r\n", "Config.Passes", "A", 7).src;
+  assert(crlf === "Config.Passes = {\r\n\tA = 7,\r\n}\r\n", "CRLF line endings kept");
   return "selftest ok";
 }
 
 // ---------------------------------------------------------------- CLI
-const isMain = process.argv[1] && resolve(process.argv[1]) === fileURLToPath(import.meta.url);
+// realpath: the installed skill is a symlink/junction, and Node reports import.meta.url as the real path.
+const isMain = process.argv[1] && realpathSync(resolve(process.argv[1])) === realpathSync(fileURLToPath(import.meta.url));
+function clipboard() {
+  const cmd = { win32: 'powershell -NoProfile -Command "Get-Clipboard -Raw"', darwin: "pbpaste" }[process.platform]
+    ?? "wl-paste 2>/dev/null || xclip -selection clipboard -o 2>/dev/null || xsel -b";
+  return execSync(cmd, { encoding: "utf8" });
+}
 if (isMain) {
   const [cmd, ...a] = process.argv.slice(2);
   const print = (v) => console.log(typeof v === "string" ? v : JSON.stringify(v, null, 2));
   const run = {
     "set-key": async () => {
-      const key = readFileSync(0, "utf8").trim();
+      const key = (process.stdin.isTTY ? clipboard() : readFileSync(0, "utf8")).trim();
       if (key.length < 40 || /\s/.test(key)) throw new Error("That doesn't look like an Open Cloud API key. Copy the full key and try again.");
       mkdirSync(dirname(KEY_FILE), { recursive: true, mode: 0o700 });
       writeFileSync(KEY_FILE, key + "\n", { mode: 0o600 });
