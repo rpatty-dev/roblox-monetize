@@ -1,6 +1,5 @@
 # roblox-monetize
 
-[![test](https://github.com/rpatty-dev/roblox-monetize/actions/workflows/test.yml/badge.svg)](https://github.com/rpatty-dev/roblox-monetize/actions/workflows/test.yml)
 ![Windows first](https://img.shields.io/badge/Windows-first-0078D6)
 ![zero dependencies](https://img.shields.io/badge/dependencies-0-brightgreen)
 ![license MIT](https://img.shields.io/badge/license-MIT-green)
